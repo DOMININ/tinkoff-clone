@@ -1,32 +1,32 @@
-import { StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
-import { RootTabScreenProps } from '../types';
+const Container = styled.View`
+  padding: 10px;
+  flex: 1;
+  background-color: #000000;
+`;
 
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+const Title = styled.Text`
+  color: #f2f2f2;
+`;
+
+const BlockList = styled.View`
+  flex: 1;
+`;
+
+const Block = styled.View`
+  padding: 10px;
+  background-color: #1c1c1e;
+  border-radius: 10px;
+`;
+
+export const TabOneScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
-    </View>
+    <Container>
+      <Title>Dmitry</Title>
+      <BlockList>
+        <Block />
+      </BlockList>
+    </Container>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+};
