@@ -15,12 +15,12 @@ const BlockList = styled.View`
 `;
 
 const Block = styled.View`
-  padding: 10px;
+  padding: 30px;
   background-color: #1c1c1e;
-  border-radius: 10px;
+  border-radius: 15px;
 `;
 
-export const TabOneScreen = () => {
+export const Main = () => {
   return (
     <Container>
       <Title>Dmitry</Title>
