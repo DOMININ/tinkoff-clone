@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { YellowButton } from '../components/YellowButton';
 import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const Container = styled.View`
   padding: 10px;
@@ -32,8 +33,17 @@ const Input = styled.TextInput`
 `;
 
 export const Auth = () => {
-  const [text, onChangeText] = React.useState<string>('');
-  const [number, onChangeNumber] = React.useState<string>('');
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
+
+  const handleLogin = () => {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+    .then(({ user }) => {
+      Alert.alert(user.uid);
+    })
+    .catch(() => Alert.alert('Failed login'));
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -41,20 +51,20 @@ export const Auth = () => {
         <Wrapper>
           <Title>Auth Page</Title>
           <Input
-            onChangeText={onChangeText}
-            value={text}
+            onChangeText={setEmail}
+            value={email}
             keyboardType="email-address"
             placeholder="Email"
             placeholderTextColor="#cecfd1"
           />
           <Input
-            onChangeText={onChangeNumber}
-            value={number}
+            onChangeText={setPassword}
+            value={password}
             placeholder="Password"
             placeholderTextColor="#cecfd1"
             style={{ marginBottom: 20 }}
           />
-          <YellowButton text="Auth" onPress={() => Alert.alert('Auth')} />
+          <YellowButton text="Auth" onPress={handleLogin} />
         </Wrapper>
       </Container>
     </TouchableWithoutFeedback>

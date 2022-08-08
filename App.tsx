@@ -1,6 +1,7 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Navigation } from './navigation/Navigation';
 import { SafeAreaView } from 'react-native';
+import './firebase';
 
 export default function App() {
   return (
