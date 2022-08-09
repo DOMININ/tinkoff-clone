@@ -1,8 +1,54 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components/native';
 import { YellowButton } from '../components/YellowButton';
 import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { Context } from '../context';
+
+export const Auth = () => {
+  const [, setContext] = useContext<any>(Context);
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
+  const auth = getAuth();
+
+  const handleLogin = async () => {
+    setContext((prevState: any) => ({ ...prevState, loading: true }));
+    await signInWithEmailAndPassword(auth, email, password)
+    .then(({ user }) => {
+      setContext(
+        { isAuth: true, id: user.uid }
+      );
+    })
+    .catch((error) => Alert.alert('Failed login:', error))
+    .finally(() => setContext((prevState: any) => ({ ...prevState, loading: false })));
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <Container>
+        <Wrapper>
+          <Title>Auth Page</Title>
+          <Input
+            onChangeText={setEmail}
+            value={email}
+            keyboardType="email-address"
+            placeholder="Email"
+            placeholderTextColor="#cecfd1"
+          />
+          <Input
+            onChangeText={setPassword}
+            value={password}
+            placeholder="Password"
+            placeholderTextColor="#cecfd1"
+            secureTextEntry
+            style={{ marginBottom: 20 }}
+          />
+          <YellowButton text="Auth" onPress={handleLogin} />
+        </Wrapper>
+      </Container>
+    </TouchableWithoutFeedback>
+  );
+};
 
 const Container = styled.View`
   padding: 10px;
@@ -31,42 +77,3 @@ const Input = styled.TextInput`
   border-bottom-width: 2px;
   font-size: 18px;
 `;
-
-export const Auth = () => {
-  const [email, setEmail] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
-
-  const handleLogin = () => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-    .then(({ user }) => {
-      Alert.alert(user.uid);
-    })
-    .catch(() => Alert.alert('Failed login'));
-  };
-
-  return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <Container>
-        <Wrapper>
-          <Title>Auth Page</Title>
-          <Input
-            onChangeText={setEmail}
-            value={email}
-            keyboardType="email-address"
-            placeholder="Email"
-            placeholderTextColor="#cecfd1"
-          />
-          <Input
-            onChangeText={setPassword}
-            value={password}
-            placeholder="Password"
-            placeholderTextColor="#cecfd1"
-            style={{ marginBottom: 20 }}
-          />
-          <YellowButton text="Auth" onPress={handleLogin} />
-        </Wrapper>
-      </Container>
-    </TouchableWithoutFeedback>
-  );
-};
