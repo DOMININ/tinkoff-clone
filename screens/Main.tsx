@@ -1,24 +1,9 @@
 import styled from 'styled-components/native';
-import { getAuth, signOut } from 'firebase/auth';
-import { Alert, Button } from 'react-native';
-import { useContext } from 'react';
-import { Context } from '../context';
+import { Button } from 'react-native';
+import { useAuth } from '../hooks/useAuth';
 
 export const Main = () => {
-  const [, setContext] = useContext<any>(Context);
-  const auth = getAuth();
-
-  const handleLogout = async () => {
-    setContext((prevState: any) => ({ ...prevState, loading: true }));
-    await signOut(auth)
-    .then(() => {
-      setContext(
-        { isAuth: false, id: '' }
-      );
-    })
-    .catch((error) => Alert.alert('Failed logout:', error))
-    .finally((() => setContext((prevState: any) => ({ ...prevState, loading: false }))));
-  };
+  const { handleLogout } = useAuth();
 
   return (
     <Container>

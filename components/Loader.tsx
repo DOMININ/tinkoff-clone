@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
-export const LoadingIndicator = () => {
+export const Loader = () => {
   return (
     <Overlay>
       <ActivityIndicator color="#ffe100" size="large" />

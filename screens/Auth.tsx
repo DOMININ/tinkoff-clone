@@ -1,27 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { YellowButton } from '../components/YellowButton';
-import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { Context } from '../context';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { useAuth } from '../hooks/useAuth';
+
+interface Data {
+  email: string,
+  password: string
+}
 
 export const Auth = () => {
-  const [, setContext] = useContext<any>(Context);
-  const [email, setEmail] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
-  const auth = getAuth();
-
-  const handleLogin = async () => {
-    setContext((prevState: any) => ({ ...prevState, loading: true }));
-    await signInWithEmailAndPassword(auth, email, password)
-    .then(({ user }) => {
-      setContext(
-        { isAuth: true, id: user.uid }
-      );
-    })
-    .catch((error) => Alert.alert('Failed login:', error))
-    .finally(() => setContext((prevState: any) => ({ ...prevState, loading: false })));
-  };
+  const [data, setData] = useState<Data>({} as Data);
+  const { handleLogin } = useAuth();
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -29,21 +19,21 @@ export const Auth = () => {
         <Wrapper>
           <Title>Auth Page</Title>
           <Input
-            onChangeText={setEmail}
-            value={email}
+            onChangeText={(value) => setData(prevState => ({ ...prevState, email: value }))}
+            value={data.email}
             keyboardType="email-address"
             placeholder="Email"
             placeholderTextColor="#cecfd1"
           />
           <Input
-            onChangeText={setPassword}
-            value={password}
+            onChangeText={(value) => setData(prevState => ({ ...prevState, password: value }))}
+            value={data.password}
             placeholder="Password"
             placeholderTextColor="#cecfd1"
             secureTextEntry
             style={{ marginBottom: 20 }}
           />
-          <YellowButton text="Auth" onPress={handleLogin} />
+          <YellowButton text="Auth" onPress={() => handleLogin(data.email, data.password)} />
         </Wrapper>
       </Container>
     </TouchableWithoutFeedback>
