@@ -10,10 +10,10 @@ import { Loader } from '../components/Loader';
 const Stack = createNativeStackNavigator();
 
 export const Navigation = () => {
-  const { user, isLoading } = useAuth();
+  const { user, initializing } = useAuth();
 
-  if (isLoading) {
-    return <Loader />;
+  if (initializing) {
+    return <Loader />
   }
 
   return (

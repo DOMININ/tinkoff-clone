@@ -14,4 +14,5 @@ const Overlay = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
+  background-color: #000000;
 `;

@@ -1,13 +1,23 @@
 import styled from 'styled-components/native';
 import { Button } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
+import { useEffect } from 'react';
+import { Loader } from '../components/Loader';
 
 export const Main = () => {
-  const { handleLogout } = useAuth();
+  const { handleLogout, getUserData, user, userInfo, isLoading } = useAuth();
+
+  useEffect(() => {
+    getUserData(user!.uid);
+  }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Container>
-      <Title>Dmitry</Title>
+      <Title>{userInfo?.name}</Title>
       <BlockList>
         <Block />
       </BlockList>

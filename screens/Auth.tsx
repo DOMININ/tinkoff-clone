@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import { YellowButton } from '../components/YellowButton';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
+import { Loader } from '../components/Loader';
 
 interface Data {
   email: string,
@@ -11,7 +12,11 @@ interface Data {
 
 export const Auth = () => {
   const [data, setData] = useState<Data>({} as Data);
-  const { handleLogin } = useAuth();
+  const { handleLogin, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
