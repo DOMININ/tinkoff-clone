@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
-import { getFirestore, doc, getDoc, DocumentData } from 'firebase/firestore';
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  User,
+  createUserWithEmailAndPassword
+} from 'firebase/auth';
+import { getFirestore, doc, getDoc, DocumentData, setDoc } from 'firebase/firestore';
 import { Alert } from 'react-native';
 
 interface UserInfo {
@@ -13,6 +20,7 @@ interface ContextProps {
   userInfo: DocumentData,
   isLoading: boolean,
   handleLogin: (email: string, password: string) => Promise<void>,
+  handleRegister: (email: string, password: string) => Promise<void>,
   handleLogout: () => Promise<void>
   getUserData: (uid: string) => Promise<void>
 }
@@ -27,16 +35,24 @@ export const AuthProvider: React.FC = ({ children }) => {
   const auth = getAuth();
   const db = getFirestore();
 
+  const handleRegister = async (email: string, password: string) => {
+    setIsLoading(true);
+    await createUserWithEmailAndPassword(auth, email, password)
+    .then(async ({ user }) => {
+      setUser(user);
+      await setDoc(doc(db, 'users', user.uid), {
+        name: email
+      });
+    })
+    .catch((error) => Alert.alert('Failed register:', error))
+    .finally(() => setIsLoading(false));
+  };
+
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
     await signInWithEmailAndPassword(auth, email, password)
     .then(async ({ user }) => {
       setUser(user);
-
-      // for register
-      // await setDoc(doc(db, 'users', user.uid), {
-      //   name: 'testo'
-      // });
     })
     .catch((error) => Alert.alert('Failed login:', error))
     .finally(() => setIsLoading(false));
@@ -75,7 +91,16 @@ export const AuthProvider: React.FC = ({ children }) => {
     });
   }, []);
 
-  const value = { user, userInfo, isLoading, initializing, handleLogin, handleLogout, getUserData };
+  const value = {
+    user,
+    userInfo,
+    isLoading,
+    initializing,
+    handleLogin,
+    handleLogout,
+    getUserData,
+    handleRegister
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { YellowButton } from '../components/YellowButton';
-import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Keyboard, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 import { Loader } from '../components/Loader';
 
@@ -12,7 +12,8 @@ interface Data {
 
 export const Auth = () => {
   const [data, setData] = useState<Data>({} as Data);
-  const { handleLogin, isLoading } = useAuth();
+  const [isLoginPage, setIsLoginPage] = useState(true);
+  const { handleLogin, handleRegister, isLoading } = useAuth();
 
   if (isLoading) {
     return <Loader />;
@@ -22,7 +23,7 @@ export const Auth = () => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Container>
         <Wrapper>
-          <Title>Auth Page</Title>
+          <Title>{isLoginPage ? 'Auth Page' : 'Register Page'}</Title>
           <Input
             onChangeText={(value) => setData(prevState => ({ ...prevState, email: value }))}
             value={data.email}
@@ -38,7 +39,27 @@ export const Auth = () => {
             secureTextEntry
             style={{ marginBottom: 20 }}
           />
-          <YellowButton text="Auth" onPress={() => handleLogin(data.email, data.password)} />
+          <YellowButton
+            text={isLoginPage ? 'Auth' : 'Register'}
+            onPress={() =>
+              isLoginPage
+                ? handleLogin(data.email, data.password)
+                : handleRegister(data.email, data.password)}
+          />
+
+          <LinkButtonWrapper>
+            <LinkButtonText>
+              {isLoginPage ? 'New to Tinkoff-clone?' : 'Already have an account?'}
+            </LinkButtonText>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => setIsLoginPage((prevState) => !prevState)}
+            >
+              <LinkButtonTextAction>
+                {isLoginPage ? ' Create an account' : ' Sign in'}
+              </LinkButtonTextAction>
+            </TouchableOpacity>
+          </LinkButtonWrapper>
         </Wrapper>
       </Container>
     </TouchableWithoutFeedback>
@@ -71,4 +92,21 @@ const Input = styled.TextInput`
   border-bottom-color: #ffffff;
   border-bottom-width: 2px;
   font-size: 18px;
+`;
+
+const LinkButtonWrapper = styled.View`
+  margin-top: 15px;
+  flex-direction: row;
+  text-align: right;
+  justify-content: flex-end;
+`;
+
+const LinkButtonText = styled.Text`
+  font-size: 15px;
+  color: #ffffff;
+`;
+
+const LinkButtonTextAction = styled.Text`
+  font-size: 15px;
+  color: #006ce8;
 `;
