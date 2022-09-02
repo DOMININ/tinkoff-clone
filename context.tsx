@@ -44,17 +44,17 @@ export const AuthProvider: React.FC = ({ children }) => {
         name: email
       });
     })
-    .catch((error) => Alert.alert('Failed register:', error))
+    .catch(() => Alert.alert('Invalid username or password'))
     .finally(() => setIsLoading(false));
   };
 
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
     await signInWithEmailAndPassword(auth, email, password)
-    .then(async ({ user }) => {
+    .then(({ user }) => {
       setUser(user);
     })
-    .catch((error) => Alert.alert('Failed login:', error))
+    .catch(() => Alert.alert('Failed login'))
     .finally(() => setIsLoading(false));
   };
 
@@ -64,7 +64,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     .then(() => {
       setUser(null);
     })
-    .catch((error) => Alert.alert('Failed logout:', error))
+    .catch(() => Alert.alert('Failed logout'))
     .finally((() => setIsLoading(false)));
   };
 

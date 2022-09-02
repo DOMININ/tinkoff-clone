@@ -36,11 +36,11 @@ const Placeholder = styled.View`
   width: 50px;
   height: 50px;
   background-color: #e2e2e2;
-  border-radius: 50%;
+  border-radius: 50px;
 `;
 
 const Avatar = styled.Image`
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 50px;
 `;

@@ -11,9 +11,20 @@ interface Data {
 }
 
 export const Auth = () => {
-  const [data, setData] = useState<Data>({} as Data);
+  const [data, setData] = useState<Data>({ email: '', password: '' } as Data);
   const [isLoginPage, setIsLoginPage] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const { handleLogin, handleRegister, isLoading } = useAuth();
+
+  const onSubmitClick = () => {
+    if (data.email === '' || data.password === '') {
+      setHasError(true);
+    } else {
+      isLoginPage
+        ? handleLogin(data.email, data.password)
+        : handleRegister(data.email, data.password);
+    }
+  };
 
   if (isLoading) {
     return <Loader />;
@@ -24,28 +35,34 @@ export const Auth = () => {
       <Container>
         <Wrapper>
           <Title>{isLoginPage ? 'Auth Page' : 'Register Page'}</Title>
-          <Input
-            onChangeText={(value) => setData(prevState => ({ ...prevState, email: value }))}
-            value={data.email}
-            keyboardType="email-address"
-            placeholder="Email"
-            placeholderTextColor="#cecfd1"
-          />
-          <Input
-            onChangeText={(value) => setData(prevState => ({ ...prevState, password: value }))}
-            value={data.password}
-            placeholder="Password"
-            placeholderTextColor="#cecfd1"
-            secureTextEntry
-            style={{ marginBottom: 20 }}
-          />
-          <YellowButton
-            text={isLoginPage ? 'Auth' : 'Register'}
-            onPress={() =>
-              isLoginPage
-                ? handleLogin(data.email, data.password)
-                : handleRegister(data.email, data.password)}
-          />
+          <InputWrapper>
+            <Input
+              onChangeText={(value) => setData(prevState => ({ ...prevState, email: value.trim() }))}
+              value={data.email}
+              keyboardType="email-address"
+              placeholder="Email"
+              placeholderTextColor="#cecfd1"
+            />
+            {hasError && !data.email.length && <ErrorText>Email cannot be empty</ErrorText>}
+          </InputWrapper>
+
+          <InputWrapper>
+            <Input
+              onChangeText={(value) => setData(prevState => ({ ...prevState, password: value.trim() }))}
+              value={data.password}
+              placeholder="Password"
+              placeholderTextColor="#cecfd1"
+              secureTextEntry
+            />
+            {hasError && !data.password.length && <ErrorText>Password cannot be empty</ErrorText>}
+          </InputWrapper>
+
+          <ButtonWrapper>
+            <YellowButton
+              text={isLoginPage ? 'Auth' : 'Register'}
+              onPress={onSubmitClick}
+            />
+          </ButtonWrapper>
 
           <LinkButtonWrapper>
             <LinkButtonText>
@@ -81,17 +98,31 @@ const Title = styled.Text`
   color: #ffe100;
 `;
 
+const ErrorText = styled.Text`
+  position: absolute;
+  bottom: 0;
+  color: red;
+`;
+
 const Wrapper = styled.View`
   width: 70%;
 `;
 
+const InputWrapper = styled.View`
+  position: relative;
+`;
+
 const Input = styled.TextInput`
   padding: 10px 0;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   color: #ffffff;
   border-bottom-color: #ffffff;
   border-bottom-width: 2px;
   font-size: 18px;
+`;
+
+const ButtonWrapper = styled.View`
+  margin-top: 10px;
 `;
 
 const LinkButtonWrapper = styled.View`
